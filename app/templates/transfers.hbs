@@ -1,0 +1,27 @@
+<div class="modal-header">
+	<h3>PlayPay Transfers</h3>
+</div>
+
+<div class="modal-body">
+	<div class="well">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>From</th>
+					<th>To</th>
+					<th>Amount</th>
+					<th>On</th>
+			</thead>
+			<tbody>
+				{{#each transfer in model}}
+					<tr>
+						<td>{{transfer.from_email_id}}</td>
+						<td>{{transfer.to_email_id}}</td>
+						<td>{{transfer.amount}}</td>
+						<td>{{transfer.transfer_date}}</td>
+					</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+</div>

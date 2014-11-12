@@ -23,12 +23,11 @@ Router.map(function() {
 	  
   });
   
-  
-  
   this.route('login');
+  this.route('user/new', {path:'users/new'}, function() {
+	  
+  });
 
-  this.resource('session', { path: 'sessions/:session_id' }, function() { });
-  this.route('session/new');
 });
 
 export default Router;

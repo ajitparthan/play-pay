@@ -16,7 +16,8 @@ module.exports = function(environment) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
-    }
+    },
+    "simple-auth": {authorizer: 'simple-auth-authorizer:token', identificationField: 'email_id'}
   };
 
   if (environment === 'development') {
@@ -43,5 +44,7 @@ module.exports = function(environment) {
 
   }
 
+  ENV['simple-auth']={authorizer: 'simple-auth-authorizer:token', identificationField: 'email_id'};
+  
   return ENV;
 };

@@ -6,7 +6,15 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.resource('user', { path: 'users/:user_id' }, function() { });
+  this.resource('user', { path: 'users/:user_id' }, function() { 
+	  this.route('transfers',{ path: 'transfers/'}, function() {
+		  
+	  });	
+	  this.route('transfers/new', { path: 'users/:user_id/transfers/new'}, function() {
+		  
+	  });
+
+  });
   this.resource('transfer', { path: 'transfers/:transfer_id' }, function() { });
   this.resource('transfers', function() { 
 	  
@@ -14,6 +22,13 @@ Router.map(function() {
   this.resource('users', function() { 
 	  
   });
+  
+  
+  
+  this.route('login');
+
+  this.resource('session', { path: 'sessions/:session_id' }, function() { });
+  this.route('session/new');
 });
 
 export default Router;

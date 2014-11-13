@@ -89,7 +89,7 @@ Path | Protected | Verb | Description
 --- | --- | --- | ---
 /api/users | No | POST | Create a new user.
 /api-auth-token | No | POST | Authenticate and get credentials token (JWT).
-/api/users | Yes | | GET | Get all users. This is only allowed for admin users.
+/api/users | Yes | GET | Get all users. This is only allowed for admin users.
 /api/users/:email_id | Yes | GET | Get user with specified email ID. Normal users can only get their user details.
 /api/transfers | Yes | GET | Get all transfers. This is only allowed for admin users.
 /api/transfers | Yes | POST | New request to transfer money from one user to another. Though `transfer` model has a `from_email_id` and a `to_email_id`, users are allowed to only transfer their account.

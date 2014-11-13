@@ -71,11 +71,11 @@ No foreign key constraints here as there is some thought that even if user data 
 
 RESTful APIs around the `user` and `transfer` objects. The only exception is the `/api-auth-token` endpoint which used for authorization/authentication.
 
-Authentication is done by doing a `POST` on the authentication end point `/api-auth-token`. The body is a JSON containing username and password.
-```json
+Authentication is done by doing a `POST` on the authentication end point `/api-auth-token`. The body is a JSON containing username and password. Note: though field name is `username` it is the user's email ID that needs to be sent.
+```
 {
-username: <user's email_id>, 
-password: <user's password>
+username: example@domain.com, 
+password: password
 }
 ```
 If authneitcated this will return a `token` in the response.

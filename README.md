@@ -40,7 +40,7 @@ ember server
 ## Model
 The app is modeled using 2 tables.
 
-##### `user` table stores user details and account balance
+##### "user" table stores user details and account balance
 ```
 CREATE TABLE IF NOT EXISTS user 
           (name TEXT, " +
@@ -56,7 +56,7 @@ This also has business constraints and rules:
 * `balance` must be greater than 0 for each account
 * Assuming transactions are in round numbers only
 
-##### `transfer` table stores transfer details
+##### "transfer" table stores transfer details
 ```
 CREATE TABLE IF NOT EXISTS transfer 
           (from_email_id TEXT, " +

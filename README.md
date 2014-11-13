@@ -31,19 +31,21 @@ ember server
 * [nodejs](http://nodejs.org) is used as app server
 * [Express](http://expressjs.com) is used for web application framework
 * [sqlite3](https://github.com/mapbox/node-sqlite3/wiki) is used for persistence 
-* [express-jwt](https://www.npmjs.org/package/express-jwt) provides support for JSON web-tokens which are used in the authentication and authorization flows
+* [express-jwt](https://www.npmjs.org/package/express-jwt) provides support for JSON web-tokens (JWT) which are used in the authentication and authorization flows
 
 ### Front end:
 * [emberjs](http://emberjs.com) is used as MVC and JS framework
 * [Twitter Boostrap](http://getbootstrap.com) is used for UI styling
 
-#### API Reference
+## API Reference
 
 Path | HTTP Verb | Description
 --- | --- | ---
+/api-auth-token | POST | Authenticate and get credentials token (JWT). This is an unprotected end-point.
+/api/users | POST | Create a new user. This is an unprotected end-point.
 /api/users | GET | Get all users
 /api/users/:email_id | GET | Get user with specified email ID
-/api/users | POST | Create a new users
+
 /api/transfers | GET | Get all transfers
 /api/transfers | POST | New request to transfer money from one user to another
 /api/transfers/:email_id | GET | Get all transfers for the email ID

@@ -1,9 +1,16 @@
 play-pay
 =======
 
-#### Installing
+### Installing
 
 * Make sure you have [nodejs](http://nodejs.org) installed. 
+* Make sure you have [Bower](http://bower.io) installed.
+* Clone from `git` repo
+* Install `nodejs` modules
+* ```
+* cd <repo_directory>
+* npm install
+* ```
 
 *If on MacOS please install using [HomeBrew](http://brew.sh). Please see http://www.wenincode.com/installing-node-jsnpm-without-sudo/ for the whys and hows of this.*
 

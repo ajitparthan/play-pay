@@ -16,6 +16,8 @@ npm install
 cd <repo_directory>
 bower install
 ```
+* Install `ember-cli`
+``npm install -g ember-cli``
 * Start server
 ```
 cd <repo_directory>

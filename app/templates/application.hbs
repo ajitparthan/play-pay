@@ -13,22 +13,17 @@
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-		
-		
+      <ul class="nav navbar-nav">		
 			<li>{{#link-to 'user' session.content.email_id disabledWhen=controller.disableUserFeatures }}My User Details{{/link-to}}</li>
-			<li>{{#link-to 'user' session.content.email_id disabledWhen=disableUserFeatures }}View My Transfers{{/link-to}}</li>
-			<li>{{#link-to 'user' session.content.email_id disabledWhen=disableUserFeatures }}Make a Transfer{{/link-to}}</li>
+			<li>{{#link-to 'mytransfers' session.content.email_id disabledWhen=disableUserFeatures }}View My Transfers{{/link-to}}</li>
+			<li>{{#link-to 'maketransfer' session.content.email_id disabledWhen=disableUserFeatures }}Make a Transfer{{/link-to}}</li>
 			<li>{{#link-to 'user' session.content.email_id disabledWhen=disableAdminFeatures }}View All Users{{/link-to}}</li>
 			<li>{{#link-to 'user' session.content.email_id disabledWhen=controller.disableAdminFeatures }}View All Transfers{{/link-to}}</li>
-  			
-		
-        
       </ul>
       <form class="navbar-form navbar-right" role="search">
         <div class="form-group">
         {{#if session.isAuthenticated}}
-        	<a {{ action 'invalidateSession' }}>Logout</a>		
+        	<a {{ action 'invalidateSession' }}>Logout {{session.content.email_id}}</a>		
 		{{else}}
   			<a {{ action 'authenticateSession' }}>Login</a>
 		{{/if}}

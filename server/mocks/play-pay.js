@@ -107,11 +107,11 @@ module.exports = function(app) {
 	});
 
   playPayRouter.get("/transfers", function(req, res) {
-	  console.log(req.route);
+	  console.log(req.query);
 	  
 		//Using "all" call as not expecting lot of rows
 	  if(req.query.email_id) {
-			db.all("SELECT from_email_id, to_email_id, amount, transfer_date, ROWID FROM transfer WHERE from_email_id=? OR to_email_id=?", req.query.email_id, req.query.email_id, function(err, rows) {
+			db.all("SELECT from_email_id, to_email_id, amount, transfer_date, ROWID as 'id' FROM transfer WHERE from_email_id=? OR to_email_id=?", req.query.email_id, req.query.email_id, function(err, rows) {
 				res.json({"transfers":rows});
 			});
 
@@ -126,14 +126,15 @@ module.exports = function(app) {
 	  console.log(req.route);
 	  
 		var d=new Date();
+		var transfer=req.body.transfer;
 	
-		if(!req.body.from_email_id || !req.body.to_email_id || !req.body.amount) {
-			res.status(500).send("Missing mandatory parameters- 'from_email_id', 'to_email_id' and 'amount' are all needed to initiate a transfer.");
+		if(!transfer.from_email_id || !transfer.to_email_id || !transfer.amount) {
+			res.status(422).send("Missing mandatory parameters- 'from_email_id', 'to_email_id' and 'amount' are all needed to initiate a transfer.");
 			
 			return;
 		} 
-		if(!(req.body.amount>0)) {
-			res.status(500).send("Amount to transfer has to be greater than 0");
+		if(!(transfer.amount>0)) {
+			res.status(422).send("Amount to transfer has to be greater than 0");
 			
 			return;			
 		}
@@ -142,32 +143,31 @@ module.exports = function(app) {
 			db.exec("BEGIN");
 			
 			db.run("INSERT INTO transfer (from_email_id, to_email_id, amount, transfer_date) VALUES (?, ?, ?, ?)", 
-				req.body.from_email_id, req.body.to_email_id, req.body.amount,d.getTime(), 
+				transfer.from_email_id, transfer.to_email_id, transfer.amount,d.getTime(), 
 				function(err) {
 					if(err) {					
 						console.error(err);
-						res.status(500).send(err.message);
+						res.status(422).send(err.message);
 						db.exec("ROLLBACK");
 					} else {
 						db.run("UPDATE user SET balance=balance-?, last_updated=? WHERE email_id=?", 
-								req.body.amount,d.getTime(),req.body.from_email_id, 
+								transfer.amount,d.getTime(),transfer.from_email_id, 
 								function(err) {
 									if(err) {					
 										console.error(err);
-										res.status(500).send(err.message);
+										res.status(422).send(err.message);
 										db.exec("ROLLBACK");
 									} else {
 										db.run("UPDATE user SET balance=balance+?, last_updated=? WHERE email_id=?", 
-												req.body.amount,d.getTime(),req.body.to_email_id, 
+												transfer.amount,d.getTime(),transfer.to_email_id, 
 												function(err) {
 													if(err) {					
 														console.error(err);
-														res.status(500).send(err.message);
+														res.status(422).send(err.message);
 														db.exec("ROLLBACK");
 													} else {
 														db.exec("COMMIT");
-														res.status(200);
-														res.end();
+														res.status(200).send({});
 													}
 											});	
 										

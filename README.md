@@ -36,15 +36,19 @@ Point any modern browser to `http://localhost:4200` and should be good to go.
 
 ## Nuts & Bolts
 
-### Backend tech stack:
+Backend tech stack:
 * [nodejs](http://nodejs.org) is used as app server
 * [Express](http://expressjs.com) is used for web application framework
 * [sqlite3](https://github.com/mapbox/node-sqlite3/wiki) is used for persistence 
 * [express-jwt](https://www.npmjs.org/package/express-jwt) provides support for JSON web-tokens (JWT) which are used in the authentication and authorization flows
 
-### Front end:
+Front end:
 * [emberjs](http://emberjs.com) is used as MVC and JS framework
 * [Twitter Boostrap](http://getbootstrap.com) is used for UI styling
+
+Development environment
+* [mocha](http://mochajs.org) for test framework
+* [ember-cli](http://www.ember-cli.com) for `emberjs` project template and rapid development tools
 
 ### Model
 The app is modeled using 2 tables.
@@ -111,7 +115,7 @@ To run the tests install [mocha](http://mochajs.org)
 ```
 npm install mocha -g
 ```
-Once `mocha` is installed ensure the app server is up and running and run from the repo directory.
+Once `mocha` is installed ensure the app server is up and running and run the tests from the repo directory.
 ```
 cd <repo_directory>
 mocha

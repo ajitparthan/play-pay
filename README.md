@@ -71,15 +71,29 @@ No foreign key constraints here as there is some thought that even if user data 
 
 RESTful APIs around the `user` and `transfer` objects. The only exception is the `/api-auth-token` endpoint which used for authorization/authentication.
 
-Path | HTTP Verb | Description
+Authentication is done by doing a `POST` on the authentication end point `/api-auth-token`. The body is a JSON containing username and password.
+```JSON
+{
+username: <user's email_id>, 
+password: <user's password>
+}
+```
+If authneitcated this will return a `token` in the response.
+
+Accessing protected endpoints need the token obtained from authentication process to be passed in the header.
+```
+Authorization: Bearer <token>
+```
+
+Path | Verb | Description
 --- | --- | ---
 /api/users | POST | Create a new user. This is an unprotected end-point.
 /api-auth-token | POST | Authenticate and get credentials token (JWT). This is an unprotected end-point.
-/api/users | GET | Get all users. This is only allowed for admin users.
-/api/users/:email_id | GET | Get user with specified email ID. Normal users can only get their user details.
-/api/transfers | GET | Get all transfers. This is only allowed for admin users.
-/api/transfers | POST | New request to transfer money from one user to another. Though `transfer` model has a `from_email_id` and a `to_email_id`, users are allowed to only transfer their account.
-/api/transfers/:email_id | GET | Get all transfers for the email ID. Normal users can only get their transfer details.
+/api/users (protected) | GET | Get all users. This is only allowed for admin users.
+/api/users/:email_id (protected) | GET | Get user with specified email ID. Normal users can only get their user details.
+/api/transfers (protected) | GET | Get all transfers. This is only allowed for admin users.
+/api/transfers (protected) | POST | New request to transfer money from one user to another. Though `transfer` model has a `from_email_id` and a `to_email_id`, users are allowed to only transfer their account.
+/api/transfers/:email_id (protected) | GET | Get all transfers for the email ID. Normal users can only get their transfer details.
 
 
 * Relying on SQL CHECK constraint on balance to disallow transfers if not enough balance. Ideally should do check in code and send back with friendlier message.

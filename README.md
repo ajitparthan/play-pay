@@ -4,11 +4,27 @@ Welcome to the play-pay wiki! Simple money transfer application.
 
 * Make sure you have [nodejs](http://nodejs.org) installed. 
 * Make sure you have [Bower](http://bower.io) installed.
-* Install [ember-cli](http://www.ember-cli.com) `npm install -g ember-cli`
+* Install [ember-cli](http://www.ember-cli.com) 
+```
+npm install -g ember-cli
+```
 * Clone from `git` repo
-* Install `nodejs` modules using `npm install` in repo directory
-* Install `Bower` modules using `bower install` in repor directory
-* Start server by typing `ember server` from within repo directory
+* Go to repo directory
+```
+cd <repo_directory>
+```
+* Install `nodejs` modules
+```
+npm install
+```
+* Install `Bower` modules
+```
+bower install
+```
+* Start server
+```
+ember server
+```
 
 ## Tech stack
 ### Backend tech stack:

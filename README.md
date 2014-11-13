@@ -7,24 +7,20 @@ play-pay
 * Make sure you have [Bower](http://bower.io) installed.
 * Clone from `git` repo
 * Install `nodejs` modules
-* ```
-* cd <repo_directory>
-* npm install
-* ```
-
-*If on MacOS please install using [HomeBrew](http://brew.sh). Please see http://www.wenincode.com/installing-node-jsnpm-without-sudo/ for the whys and hows of this.*
-
-* Clone from `git` repo
-* Install `nodejs` modules
 ```
 cd <repo_directory>
 npm install
 ```
-* Install `emberjs` components
+* Install `Bower` modules
 ```
 cd <repo_directory>
 bower install
-``` 
+```
+* Start server
+```
+cd <repo_directory>
+ember server
+```
 
 #### API Reference
 

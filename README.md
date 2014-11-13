@@ -26,6 +26,10 @@ bower install
 ember server
 ```
 
+This will startup a `nodejs` instance listening at `http://localhost:4200`. The SQLite engine will setup its datastore at `/tmp/playpay.sqlite3` 
+
+Point any modern browser to `http://localhost:4200` and should be good to go.
+
 ## Tech stack
 ### Backend tech stack:
 * [nodejs](http://nodejs.org) is used as app server

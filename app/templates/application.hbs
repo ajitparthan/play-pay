@@ -8,7 +8,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Welcome to PlayPay</a>
+      <a class="navbar-brand" href="#">PlayPay</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -17,8 +17,8 @@
 			<li>{{#link-to 'user' session.content.email_id disabledWhen=controller.disableUserFeatures }}My User Details{{/link-to}}</li>
 			<li>{{#link-to 'mytransfers' session.content.email_id disabledWhen=disableUserFeatures }}View My Transfers{{/link-to}}</li>
 			<li>{{#link-to 'maketransfer' session.content.email_id disabledWhen=disableUserFeatures }}Make a Transfer{{/link-to}}</li>
-			<li>{{#link-to 'user' session.content.email_id disabledWhen=disableAdminFeatures }}View All Users{{/link-to}}</li>
-			<li>{{#link-to 'user' session.content.email_id disabledWhen=controller.disableAdminFeatures }}View All Transfers{{/link-to}}</li>
+			<li>{{#link-to 'users' disabledWhen=disableAdminFeatures }}View All Users{{/link-to}}</li>
+			<li>{{#link-to 'transfers' disabledWhen=controller.disableAdminFeatures }}View All Transfers{{/link-to}}</li>
       </ul>
       <form class="navbar-form navbar-right" role="search">
         <div class="form-group">

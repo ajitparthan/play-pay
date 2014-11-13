@@ -7,7 +7,7 @@ export default Ember.ObjectController.extend({
 	}),
 	disableAdminFeatures: Ember.computed('session.isAuthenticated', function() {
 		var session=this.get("session");
-		return !(session.isAuthenticated && session.content.email_id=="admin@domain.com");
+		return !(session.isAuthenticated && session.content.user_type=="admin");
 	})
 
 });

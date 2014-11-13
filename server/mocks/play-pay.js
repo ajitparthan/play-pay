@@ -9,6 +9,7 @@ db.serialize(function() {
 	db.run("CREATE TABLE IF NOT EXISTS user (name TEXT, " +
 						"email_id TEXT PRIMARY KEY, " +
 						"password_hash TEXT, " +
+						"user_type TEXT, "+
 						"balance INTEGER CHECK (balance>=0), "+
 						"created DATETIME, " +
 						"last_updated DATETIME)");
@@ -33,13 +34,13 @@ module.exports = function(app) {
 	  	var email_id=req.body.username;
 	  	
 		//Using "all" call as not expecting lot of rows
-		db.all("SELECT password_hash, name FROM user WHERE email_id=?",email_id,function(err, rows) {
+		db.all("SELECT password_hash, name, user_type FROM user WHERE email_id=?",email_id,function(err, rows) {
 			if(rows.length==1 && req.body.password==rows[0].password_hash) {
-				var profile={email_id: email_id, name:rows[0].name};
+				var profile={email_id: email_id, name:rows[0].name, user_type:rows[0].user_type};
 				var token = jwt.sign(profile, "secreeeete", { expiresInMinutes: 60*5 });
 
 				console.log("Valid login with "+email_id);
-				res.json({token:token, email_id:email_id});				
+				res.json({token:token, email_id:email_id, name:rows[0].name, user_type:rows[0].user_type});				
 			} else {
 				console.log("Invalid login with "+email_id);
 				res.status(401).send('Invalid user or password');
@@ -53,6 +54,9 @@ module.exports = function(app) {
 	  	var user=req.body.user;
 		var d=new Date();
 		var password_hash=user.password; //should really hash instead of storing plain text
+		var user_type="normal";
+		
+		if(user.email_id=="admin@domain.com") user_type="admin";
 		
 		if(!user.name || !user.email_id || !password_hash) {
 			console.log(req.body);
@@ -61,8 +65,8 @@ module.exports = function(app) {
 			return;			
 		} 
 		
-		db.run("INSERT INTO user (name, email_id, password_hash, balance, created, last_updated) VALUES (?, ?, ?, ?, ?, ?)", 
-			user.name, user.email_id, password_hash,100,d.getTime(),d.getTime(), 
+		db.run("INSERT INTO user (name, email_id, password_hash, balance, user_type, created, last_updated) VALUES (?, ?, ?, ?, ?, ?, ?)", 
+			user.name, user.email_id, password_hash, 100, user_type, d.getTime(),d.getTime(), 
 			function(err) {
 				if(err) {
 					console.error(err);
@@ -83,8 +87,12 @@ module.exports = function(app) {
   playPayRouter.get("/users", function(req, res) {
 	  console.log(req.route);
 	  
-		//Using "all" call as not expecting lot of rows
-	    db.all("SELECT name, email_id, balance, email_id AS 'id', created, last_updated FROM user", function(err, rows) {
+	  if(req.user.user_type!="admin") {
+		  res.status(403).send("Not authorized for this operation");
+		  return;
+	  }
+	//Using "all" call as not expecting lot of rows
+	   db.all("SELECT name, email_id, balance, email_id AS 'id', created, last_updated FROM user", function(err, rows) {
 	        res.json({"users":rows});
 	    });
 	});
@@ -93,6 +101,11 @@ module.exports = function(app) {
 
   playPayRouter.get("/users/:email_id", function(req, res) {
 	  console.log(req.route);
+	  
+	  if(req.user.user_type!="admin" && req.user.email_id!=req.params.email_id) {
+		  res.status(403).send("Not authorized for this operation");
+		  return;
+	  }
 	  
 		//Using "all" call as not expecting lot of rows
 	    db.all("SELECT name, email_id, balance, ROWID as 'id', created, last_updated FROM user WHERE email_id=?",req.params.email_id,function(err, rows) {
@@ -111,19 +124,30 @@ module.exports = function(app) {
 	  
 		//Using "all" call as not expecting lot of rows
 	  if(req.query.email_id) {
+		  if(req.user.user_type!="admin" && req.user.email_id!=req.query.email_id) {
+			  res.status(403).send("Not authorized for this operation");
+			  return;
+		  }
+
 			db.all("SELECT from_email_id, to_email_id, amount, transfer_date, ROWID as 'id' FROM transfer WHERE from_email_id=? OR to_email_id=?", req.query.email_id, req.query.email_id, function(err, rows) {
 				res.json({"transfers":rows});
 			});
 
 	  } else {
+		 if(req.user.user_type!="admin") {
+			 res.status(403).send("Not authorized for this operation");
+			 return;
+		 }
+		 
 		db.all("SELECT from_email_id, to_email_id, amount, transfer_date, ROWID as 'id' FROM transfer", function(err, rows) {
 			res.json({"transfers":rows});
-		});
+		});  
+
 	  }
 	});
 	
   playPayRouter.post("/transfers", function(req, res) {
-	  console.log(req.route);
+	  console.log(req.body);
 	  
 		var d=new Date();
 		var transfer=req.body.transfer;
@@ -135,6 +159,11 @@ module.exports = function(app) {
 		} 
 		if(!(transfer.amount>0)) {
 			res.status(422).send("Amount to transfer has to be greater than 0");
+			
+			return;			
+		}
+		if(transfer.to_email_id==transfer.from_email_id) {
+			res.status(422).send("From and To accounts must be different for a transfer");
 			
 			return;			
 		}
@@ -157,6 +186,9 @@ module.exports = function(app) {
 										console.error(err);
 										res.status(422).send(err.message);
 										db.exec("ROLLBACK");
+									} else if(this.changes!=1) {
+										res.status(422).send("Error updating From account of the transfer");
+										db.exec("ROLLBACK");
 									} else {
 										db.run("UPDATE user SET balance=balance+?, last_updated=? WHERE email_id=?", 
 												transfer.amount,d.getTime(),transfer.to_email_id, 
@@ -164,6 +196,9 @@ module.exports = function(app) {
 													if(err) {					
 														console.error(err);
 														res.status(422).send(err.message);
+														db.exec("ROLLBACK");
+													} else if(this.changes!=1) {
+														res.status(422).send("Error updating To account of the transfer");
 														db.exec("ROLLBACK");
 													} else {
 														db.exec("COMMIT");
@@ -184,7 +219,12 @@ module.exports = function(app) {
 
   playPayRouter.get("/transfers/:transfer_id", function(req, res) {
 	  console.log(req.route);
-	  
+
+	  if(req.user.user_type!="admin") {
+		  res.status(403).send("Not authorized for this operation");
+		  return;
+	  }
+
 		//Using "all" call as not expecting lot of rows
 		db.all("SELECT from_email_id, to_email_id, amount, transfer_date, ROWID as 'id' FROM transfer WHERE ROWID=?", req.params.transfer_id, function(err, rows) {
 			res.json({"requests":rows});

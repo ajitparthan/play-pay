@@ -43,42 +43,43 @@ The app is modeled using 2 tables.
 **user** table stores user details and account balance
 ```
 CREATE TABLE IF NOT EXISTS user 
-          (name TEXT, " +
-						"email_id TEXT PRIMARY KEY, " +
-						"password_hash TEXT, " +
-						"user_type TEXT, "+
-						"balance INTEGER CHECK (balance>=0), "+
-						"created DATETIME, " +
-						"last_updated DATETIME)
+        (name TEXT, " +
+	"email_id TEXT PRIMARY KEY, " +
+	"password_hash TEXT, " +
+	"user_type TEXT, "+
+	"balance INTEGER CHECK (balance>=0), "+
+	"created DATETIME, " +
+	"last_updated DATETIME)
 ```
 This also has business constraints and rules:
 * `email_id` is used as id throughtout and hence must be unique
 * `balance` must be greater than 0 for each account
 * Assuming transactions are in round numbers only
 
+
 **transfer** table stores transfer details
 ```
 CREATE TABLE IF NOT EXISTS transfer 
-          (from_email_id TEXT, " +
-						"to_email_id TEXT, " +
-						"amount INTEGER, "+
-						"transfer_date DATETIME)
+        (from_email_id TEXT, " +
+	"to_email_id TEXT, " +
+	"amount INTEGER, "+
+	"transfer_date DATETIME)
 ```
 No foreign key constraints here as there is some thought that even if user data gets archived the transfer history may need to be preserved. So ensuring transfers are happening between bonafide accounts is done at the app code layer.
 
-
-
 ## API Reference
+
+RESTful APIs around the `user` and `transfer` objects. The only exception is the `/api-auth-token` endpoint which used for authorization/authentication.
 
 Path | HTTP Verb | Description
 --- | --- | ---
 /api/users | POST | Create a new user. This is an unprotected end-point.
 /api-auth-token | POST | Authenticate and get credentials token (JWT). This is an unprotected end-point.
-/api/users | GET | Get all users
-/api/users/:email_id | GET | Get user with specified email ID
-/api/transfers | GET | Get all transfers
-/api/transfers | POST | New request to transfer money from one user to another
-/api/transfers/:email_id | GET | Get all transfers for the email ID
+/api/users | GET | Get all users. This is only allowed for admin users.
+/api/users/:email_id | GET | Get user with specified email ID. Normal users can only get their user details.
+/api/transfers | GET | Get all transfers. This is only allowed for admin users.
+/api/transfers | POST | New request to transfer money from one user to another. Though `transfer` model has a `from_email_id` and a `to_email_id`, users are allowed to only transfer their account.
+/api/transfers/:email_id | GET | Get all transfers for the email ID. Normal users can only get their transfer details.
 
 
 * Relying on SQL CHECK constraint on balance to disallow transfers if not enough balance. Ideally should do check in code and send back with friendlier message.

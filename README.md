@@ -21,8 +21,12 @@ npm install
 ```
 bower install
 ```
-* Start server
+
+## Starting up
+
+Once all installation steps are done successfuly go to the repo directory to start the server.
 ```
+cd <repo_directory>
 ember server
 ```
 
@@ -30,7 +34,8 @@ This will startup a `nodejs` instance listening at `http://localhost:4200`. The 
 
 Point any modern browser to `http://localhost:4200` and should be good to go.
 
-## Tech stack
+## Nuts & Bolts
+
 ### Backend tech stack:
 * [nodejs](http://nodejs.org) is used as app server
 * [Express](http://expressjs.com) is used for web application framework
@@ -41,7 +46,7 @@ Point any modern browser to `http://localhost:4200` and should be good to go.
 * [emberjs](http://emberjs.com) is used as MVC and JS framework
 * [Twitter Boostrap](http://getbootstrap.com) is used for UI styling
 
-## Model
+### Model
 The app is modeled using 2 tables.
 
 **user** table stores user details and account balance
@@ -71,7 +76,7 @@ CREATE TABLE IF NOT EXISTS transfer
 ```
 No foreign key constraints here as there is some thought that even if user data gets archived the transfer history may need to be preserved. So ensuring transfers are happening between bonafide accounts is done at the app code layer.
 
-## API Reference
+### API Reference
 
 RESTful APIs around the `user` and `transfer` objects. The only exception is the `/api-auth-token` endpoint which used for authorization/authentication.
 
@@ -99,9 +104,23 @@ Path | Protected | Verb | Description
 /api/transfers | Yes | POST | New request to transfer money from one user to another. Though `transfer` model has a `from_email_id` and a `to_email_id`, users are allowed to only transfer their account.
 /api/transfers/:email_id | Yes | GET | Get all transfers for the email ID. Normal users can only get their transfer details.
 
+### Testing
+Given the app is self-contained combined unit/integration/feature tests into one suite. Sample tests in the `test` folder.
 
+To run the tests install [mocha](http://mochajs.org)
+```
+npm install mocha -g
+```
+Once `mocha` is installed ensure the app server is up and running and run from the repo directory.
+```
+cd <repo_directory>
+mocha
+```
+
+## Warts and wrinkles
 * Relying on SQL CHECK constraint on balance to disallow transfers if not enough balance. Ideally should do check in code and send back with friendlier message.
 * Relying on SQL unique constraint to do check if emailid is already registered and showing message from SQL directly. Ideally should have friendlier message.
 * Restricting to round dollar transactions
-* Storing passwords in clear- should really be hashed
+* Storing passwords in clear(!!)- should really be hashed
+* Authentication should really happen on `HTTPS` as opposed to `HTTP`
 * Using same table to store user and account details. Ideally should separate these 2.

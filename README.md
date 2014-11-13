@@ -1,7 +1,6 @@
-play-pay
-=======
+Welcome to the play-pay wiki! Simple money transfer application.
 
-### Installing
+## Installing
 
 * Make sure you have [nodejs](http://nodejs.org) installed. 
 * Make sure you have [Bower](http://bower.io) installed.
@@ -26,6 +25,17 @@ cd <repo_directory>
 ember server
 ```
 
+## Tech stack
+### Backend tech stack:
+* [nodejs](http://nodejs.org) is used as app server
+* [Express](http://expressjs.com) is used for web application framework
+* [sqlite3](https://github.com/mapbox/node-sqlite3/wiki) is used for persistence 
+* [express-jwt](https://www.npmjs.org/package/express-jwt) provides support for JSON web-tokens which are used in the authentication and authorization flows
+
+### Front end:
+* [emberjs](http://emberjs.com) is used as MVC and JS framework
+* [Twitter Boostrap](http://getbootstrap.com) is used for UI styling
+
 #### API Reference
 
 Path | HTTP Verb | Description
@@ -37,68 +47,6 @@ Path | HTTP Verb | Description
 /api/transfers | POST | New request to transfer money from one user to another
 /api/transfers/:email_id | GET | Get all transfers for the email ID
 
-
-* **GET /api/users** - Returns all users
-
-Response JSON
-
-```
-{
-    "users": [
-        {
-            "name": "nickname1",
-            "email_id": "a1@b.c",
-            "balance": 100,
-            "rowid": 1
-        },
-        {
-            "name": "nickname",
-            "email_id": "a@b.c",
-            "balance": 100,
-            "rowid": 2
-        }
-    ]
-}
-```
-* **POST /api/users** - Create new user
-
-Request JSON
-```
-{
-    "name": "nickname2",
-    "email_id": "a2@b.c",
-    "password": "password"
-}
-```
-* **GET /api/transfers** - Returns all users
-
-Response JSON
-
-```
-{
-    "requests": [
-        {
-            "from_email_id": "user1@domain.com",
-            "to_email_id": "user2@domain.com",
-            "amount": 10,
-            "transfer_date": 1415630573620,
-            "rowid": 3
-        }
-    ]
-}
-```
-
-* **POST /api/transfers** - New request to transfer money from one user to another
-
-Request JSON
-```
-{
-    "from_email_id": "user1@domain.com",
-    "to_email_id": "user2@domain.com",
-    "amount": 90
-}
-```
-*NOTE: While the API allows setting a `from_email_id`, the request wil be rejected if it does not match that of current making the API request*
 
 * Relying on SQL CHECK constraint on balance to disallow transfers if not enough balance. Ideally should do check in code and send back with friendlier message.
 * Relying on SQL unique constraint to do check if emailid is already registered and showing message from SQL directly. Ideally should have friendlier message.
